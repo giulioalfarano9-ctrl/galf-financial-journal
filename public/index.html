@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GALF Financial Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  :root {
+    --paper: #F7F3E8;
+    --paper-dark: #EFE8D6;
+    --ink: #1B1815;
+    --ink-soft: #4A443C;
+    --ink-faint: #8A8271;
+    --rule: #1B1815;
+    --accent: #7A1F1F;
+    --hair: #D8D0BC;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: #DAD5C6;
+    color: var(--ink);
+    font-family: "PT Serif", Georgia, "Times New Roman", serif;
+  }
+  .stage { max-width: 880px; margin: 0 auto; padding: 3rem 1rem 5rem; perspective: 1800px; }
+  .stack-wrap { position: relative; }
+  .stack-wrap .deck {
+    position: absolute; inset: 0; background: var(--paper-dark);
+    border: 1px solid var(--hair);
+  }
+  .stack-wrap .deck.d1 { transform: rotate(-1.1deg) translate(6px, 8px); z-index: 1; }
+  .stack-wrap .deck.d2 { transform: rotate(0.8deg) translate(-5px, 12px); z-index: 0; }
+  .paper {
+    position: relative; z-index: 2;
+    background: var(--paper);
+    border: 1px solid var(--hair);
+    box-shadow: 0 24px 48px rgba(20,16,8,0.28), 0 4px 12px rgba(20,16,8,0.18);
+    transform: rotateX(1deg) rotateY(-0.4deg);
+    padding: 2.25rem 2.5rem 2.75rem;
+  }
+  .masthead { text-align: center; }
+  .masthead h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 900; font-size: 46px; letter-spacing: 1px; margin: 0;
+    text-transform: uppercase;
+  }
+  .masthead .tagline { font-style: italic; color: var(--ink-soft); font-size: 13px; margin: 4px 0 0; }
+  .masthead-info {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ink-soft);
+    margin: 14px 0 6px; padding-top: 8px; border-top: 1px solid var(--rule);
+  }
+  .rule-thick { border: none; border-top: 3px solid var(--rule); margin: 2px 0 1px; }
+  .rule-thin { border: none; border-top: 1px solid var(--rule); margin: 0 0 16px; }
+  .editions { text-align: center; margin: 0 0 20px; }
+  .editions button {
+    font-family: "PT Serif", serif; background: none; border: none; cursor: pointer;
+    font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-faint);
+    padding: 4px 14px; border-bottom: 2px solid transparent;
+  }
+  .editions button.active { color: var(--ink); border-bottom: 2px solid var(--accent); font-weight: 700; }
+  .editions span { color: var(--hair); }
+  #articles { transform-style: preserve-3d; }
+  .lead { border-bottom: 1px double var(--rule); padding-bottom: 20px; margin-bottom: 20px; }
+  .kicker {
+    display: inline-block; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent); font-weight: 700; margin-bottom: 6px;
+  }
+  .lead h2 {
+    font-family: "Playfair Display", serif; font-size: 32px; line-height: 1.15; margin: 0 0 10px; font-weight: 800;
+  }
+  .byline { font-size: 12px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+  .lead-body { columns: 2; column-gap: 28px; font-size: 15.5px; line-height: 1.65; text-align: justify; hyphens: auto; }
+  .lead-body p { margin: 0 0 10px; }
+  .lead-body p::first-letter {
+    font-family: "Playfair Display", serif; font-size: 46px; font-weight: 900; float: left;
+    line-height: 0.8; padding: 4px 6px 0 0; color: var(--ink);
+  }
+  .analysis { font-size: 14px; color: var(--ink-soft); margin: 8px 0 0; break-inside: avoid; }
+  .analysis b { color: var(--ink); }
+  .pullquote {
+    font-family: "Playfair Display", serif; font-style: italic; font-size: 20px; line-height: 1.4;
+    text-align: center; color: var(--ink); margin: 16px auto 6px; max-width: 520px;
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 12px 8px;
+  }
+  .pullquote .label { display: block; font-family: "PT Serif", serif; font-style: normal; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 6px; font-weight: 700; }
+  .tags-row { text-align: center; font-size: 11px; color: var(--ink-faint); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-top: 8px; }
+  .columns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+  .story { border-top: 1px solid var(--hair); padding-top: 14px; margin-top: 14px; break-inside: avoid; }
+  .story h3 { font-family: "Playfair Display", serif; font-size: 19px; line-height: 1.25; margin: 0 0 6px; font-weight: 700; }
+  .story .kicker { font-size: 10.5px; }
+  .story .byline { margin-bottom: 8px; }
+  .story p { font-size: 14px; line-height: 1.6; text-align: justify; hyphens: auto; margin: 0 0 8px; }
+  .story .pullquote { font-size: 15px; margin: 10px auto 4px; padding: 8px 4px; }
+  .story .tags-row { text-align: left; }
+  .footnote { text-align: center; font-size: 11px; color: var(--ink-faint); font-style: italic; margin-top: 24px;
+    border-top: 1px solid var(--hair); padding-top: 12px; }
+  @media (max-width: 640px) {
+    .paper { padding: 1.5rem 1.25rem 2rem; }
+    .masthead h1 { font-size: 30px; }
+    .lead h2 { font-size: 24px; }
+    .lead-body { columns: 1; }
+    .columns-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="stack-wrap">
+    <div class="deck d1"></div>
+    <div class="deck d2"></div>
+    <div class="paper">
+      <div class="masthead">
+        <h1>Galf Financial Journal</h1>
+        <p class="tagline">Notizie che contano. Punti di vista che fanno discutere.</p>
+      </div>
+      <div class="masthead-info">
+        <span id="today-date">Ven 17 lug 2026</span>
+        <span id="edition-label">Edizione del mattino</span>
+        <span>A cura di Giulio Alfarano</span>
+      </div>
+      <hr class="rule-thick"><hr class="rule-thin">
+
+      <div class="editions">
+        <button id="btn-morning" class="active">Edizione 6:00</button>
+        <span>&mdash;</span>
+        <button id="btn-afternoon">Edizione 14:00</button>
+      </div>
+
+      <div id="articles"></div>
+
+      <p class="footnote">Contenuti di esempio, in attesa del primo aggiornamento automatico con notizie reali.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+var data = {
+  morning: [
+    {cat:'Macro', rel:'Alta', source:'Esempio: Reuters', time:'06:00', title:'La BCE lascia i tassi invariati, ma il comunicato tradisce nervosismo', sintesi:"Nessuna sorpresa sul tasso, ma il linguaggio del comunicato si è fatto più cauto sull'inflazione core, un dettaglio che gli analisti non stanno lasciando passare.", perche:"Un tono più prudente oggi può anticipare un taglio a settembre: cambia subito le attese su bond ed euro.", spunto:'Le banche centrali non guidano più i mercati: li inseguono, mentre i trader hanno già deciso prima del comunicato.', tags:['LinkedIn','X']},
+    {cat:'Azionario', rel:'Media', source:'Esempio: Bloomberg', time:'05:40', title:'Wall Street chiude mista, il tech corre in controtendenza', sintesi:'Nasdaq +0,4%, S&P 500 piatto, sostenuti da un trimestrale sopra le attese di un big tech che ha spiazzato gli scettici.', perche:'Segnala che il mercato premia ancora la crescita, anche con tassi alti: non era affatto scontato in questa fase.', spunto:'Il "vecchio" mercato da value non sta tornando indietro: è solo una rotazione temporanea travestita da svolta storica.', tags:['Threads','Video']},
+    {cat:'Crypto', rel:'Media', source:'Esempio: The Block', time:'05:55', title:'Bitcoin sopra i massimi delle ultime due settimane', sintesi:'Volumi in aumento, spinta da flussi netti positivi sugli ETF spot USA che continuano ad assorbire domanda istituzionale.', perche:"Gli ETF confermano di essere diventati un canale strutturale di domanda, non più un evento una tantum del 2024.", spunto:'Gli ETF hanno ucciso l\'anima ribelle di bitcoin: oggi è solo un altro trade istituzionale, e i puristi lo sanno benissimo.', tags:['X','Video']}
+  ],
+  afternoon: [
+    {cat:'Geopolitica', rel:'Alta', source:'Esempio: FT', time:'13:30', title:'Nuove tensioni commerciali tra USA e UE sui dazi tech', sintesi:"Bruxelles valuta contromisure dopo l'annuncio di nuove tariffe su semiconduttori, riaprendo un fronte che sembrava sopito.", perche:"Un'escalation colpirebbe le catene di fornitura globali già fragili: effetto diretto su costi e margini delle aziende europee.", spunto:'Non torniamo verso blocchi commerciali contrapposti: è teatro negoziale, e chi grida "nuova guerra fredda economica" ci casca ogni volta.', tags:['LinkedIn']},
+    {cat:'Commodities', rel:'Media', source:'Esempio: Platts', time:'13:10', title:'Petrolio in calo su timori di domanda cinese debole', sintesi:'Brent -1,8%, dati PMI manifatturiero sotto le attese in Cina, riaccendendo i dubbi su una ripresa più lenta del previsto.', perche:'La Cina resta il termometro della domanda globale: un rallentamento qui si sente ovunque, dai noli marittimi ai metalli industriali.', spunto:'Continuiamo a leggere il destino dell\'economia mondiale nei dati cinesi, anche sapendo quanto sono manipolabili: comodo, ma pigro.', tags:['X','Threads']},
+    {cat:'Macro', rel:'Alta', source:'Esempio: Il Sole 24 Ore', time:'14:00', title:'Inflazione USA in linea con le attese, ma i servizi restano il nodo', sintesi:'CPI +3,1% annuo, la componente servizi resta la più vischiosa e continua a resistere a ogni tentativo di raffreddamento.', perche:"Conferma che l'ultimo tratto verso il target 2% è il più difficile: la Fed non ha alcuna fretta di tagliare.", spunto:'Forse dovremmo smettere di aspettare un ritorno al 2% e accettare che l\'inflazione "normale" ora è un\'altra, più alta.', tags:['LinkedIn','Video']}
+  ]
+};
+
+function renderEdition(edition){
+  document.getElementById('edition-label').textContent = edition === 'morning' ? 'Edizione del mattino' : 'Edizione del pomeriggio';
+  document.getElementById('btn-morning').className = edition === 'morning' ? 'active' : '';
+  document.getElementById('btn-afternoon').className = edition === 'afternoon' ? 'active' : '';
+  var items = data[edition];
+  var container = document.getElementById('articles');
+  var lead = items[0];
+  var rest = items.slice(1);
+
+  var html = '';
+  html += '<div class="lead">' +
+    '<span class="kicker">' + lead.cat + ' &middot; Rilevanza ' + lead.rel + '</span>' +
+    '<h2>' + lead.title + '</h2>' +
+    '<div class="byline">' + lead.source + ' &middot; ' + lead.time + '</div>' +
+    '<div class="lead-body"><p>' + lead.sintesi + '</p><p class="analysis"><b>Perché conta.</b> ' + lead.perche + '</p></div>' +
+    '<div class="pullquote"><span class="label">Spunto per un post</span>' + lead.spunto + '</div>' +
+    '<div class="tags-row">' + lead.tags.join(' &middot; ') + '</div>' +
+  '</div>';
+
+  html += '<div class="columns-grid">';
+  rest.forEach(function(item){
+    html += '<div class="story">' +
+      '<span class="kicker">' + item.cat + ' &middot; Rilevanza ' + item.rel + '</span>' +
+      '<h3>' + item.title + '</h3>' +
+      '<div class="byline">' + item.source + ' &middot; ' + item.time + '</div>' +
+      '<p>' + item.sintesi + '</p>' +
+      '<p class="analysis"><b>Perché conta.</b> ' + item.perche + '</p>' +
+      '<div class="pullquote"><span class="label">Spunto per un post</span>' + item.spunto + '</div>' +
+      '<div class="tags-row">' + item.tags.join(' &middot; ') + '</div>' +
+    '</div>';
+  });
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function switchEdition(edition){
+  var el = document.getElementById('articles');
+  el.style.transformOrigin = 'left center';
+  el.style.transition = 'transform .35s ease, opacity .35s ease';
+  el.style.transform = 'rotateY(-90deg)';
+  el.style.opacity = '0';
+  setTimeout(function(){
+    renderEdition(edition);
+    el.style.transition = 'none';
+    el.style.transform = 'rotateY(90deg)';
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        el.style.transition = 'transform .35s ease, opacity .35s ease';
+        el.style.transform = 'rotateY(0deg)';
+        el.style.opacity = '1';
+      });
+    });
+  }, 350);
+}
+
+document.getElementById('btn-morning').addEventListener('click', function(){ switchEdition('morning'); });
+document.getElementById('btn-afternoon').addEventListener('click', function(){ switchEdition('afternoon'); });
+renderEdition('morning');
+</script>
+</body>
+</html>
